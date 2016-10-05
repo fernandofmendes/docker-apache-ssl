@@ -32,6 +32,7 @@ RUN sed -i 's/\;error_log\ \=\ php_errors\.log/error_log\ \=\ \/var\/www\/html\/
 
 # Activate a2enmod
 RUN a2enmod rewrite
+RUN a2enmod expires
 
 #ADD ./000-default.conf /etc/apache2/sites-available/
 ADD ./001-web.conf /etc/apache2/sites-available/
