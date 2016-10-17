@@ -61,7 +61,6 @@ ENV APACHE_SERVERALIAS docker.localhost
 ENV APACHE_DOCUMENTROOT /var/www/html
 
 # Install Postfix.
-RUN echo $(hostname).docker.lojavirtual.digital > /etc/mailname
 RUN echo postfix postfix/mailname string $(hostname).docker.lojavirtual.digital | debconf-set-selections
 RUN echo postfix postfix/main_mailer_type string \'Internet Site\' | debconf-set-selections
 RUN apt-get install -y postfix
