@@ -25,25 +25,26 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
 RUN apt-get update;
 RUN apt-get install -y libapache2-mod-gnutls
 
+# Configure PHP TimeZone
 RUN sed -i 's/\;date\.timezone\ \=/date\.timezone\ \=\ America\/Sao_Paulo/g' /etc/php5/cli/php.ini
 RUN sed -i 's/\;date\.timezone\ \=/date\.timezone\ \=\ America\/Sao_Paulo/g' /etc/php5/apache2/php.ini
+RUN sed -i 's/\;date\.timezone\ \=/date\.timezone\ \=\ America\/Sao_Paulo/g' /etc/php5/apache2/php.ini
 
+# Configure PHP Error log
 RUN sed -i 's/\;error_log\ \=\ php_errors\.log/error_log\ \=\ \/var\/www\/html\/logs\/php_errors\.log/g' /etc/php5/apache2/php.ini
 
-#PHP Short tag
+# Configure Short Tag
 RUN sed -i 's/short_open_tag\ \=\ Off/short_open_tag\ \=\ On/g' /etc/php5/apache2/php.ini
 
 # Activate a2enmod
 RUN a2enmod rewrite
 RUN a2enmod expires
 
-#ADD ./000-default.conf /etc/apache2/sites-available/
+# Add configuration files
 ADD ./001-web.conf /etc/apache2/sites-available/
 ADD ./002-ssl.conf /etc/apache2/sites-available/
 RUN ln -s /etc/apache2/sites-available/001-web.conf /etc/apache2/sites-enabled/
 RUN ln -s /etc/apache2/sites-available/002-ssl.conf /etc/apache2/sites-enabled/
-#RUN unlink /etc/apache2/sites-enabled/000-default.conf
-#RUN ln -s /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/
 RUN rm /etc/apache2/sites-enabled/000-default.conf
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
@@ -59,11 +60,11 @@ ENV APACHE_SERVERNAME localhost
 ENV APACHE_SERVERALIAS docker.localhost
 ENV APACHE_DOCUMENTROOT /var/www/html
 
-
 # Install Postfix.
-# RUN echo "postfix postfix/main_mailer_type string Internet site" > preseed.txt
-# RUN echo "postfix postfix/mailname string mail.webca.com.br" >> preseed.txt
-# RUN apt-get install -y postfix
+RUN echo $(hostname).docker.lojavirtual.digital > /etc/mailname
+RUN echo postfix postfix/mailname string $(hostname).docker.lojavirtual.digital | debconf-set-selections
+RUN echo postfix postfix/main_mailer_type string \'Internet Site\' | debconf-set-selections
+RUN apt-get install -y postfix
 
 RUN export TERM=xterm
 
