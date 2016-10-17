@@ -73,13 +73,13 @@ RUN useradd -s /bin/bash someone
 RUN mkdir /var/spool/mail/someone
 RUN chown someone:mail /var/spool/mail/someone
 
-ADD etc-aliases.txt /etc/aliases
-RUN chown root:root /etc/aliases
-RUN newaliases
+#ADD etc-aliases.txt /etc/aliases
+#RUN chown root:root /etc/aliases
+#RUN newaliases
 
 # Use syslog-ng to get Postfix logs (rsyslog uses upstart which does not seem
 # to run within Docker).
-RUN apt-get install -q -y syslog-ng
+#RUN apt-get install -q -y syslog-ng
 
 RUN export TERM=xterm
 
