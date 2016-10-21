@@ -36,6 +36,10 @@ RUN sed -i 's/\;error_log\ \=\ php_errors\.log/error_log\ \=\ \/var\/www\/html\/
 # Configure Short Tag
 RUN sed -i 's/short_open_tag\ \=\ Off/short_open_tag\ \=\ On/g' /etc/php5/apache2/php.ini
 
+# Enable PHP IONCUBE
+ADD ./ioncube_loader_lin_5.6.so /etc/php5/ioncube/ioncube_loader_lin_5.6.so
+RUN echo 'zend_extension = /etc/php5/ioncube/ioncube_loader_lin_5.6.so' >> /etc/php5/apache2/php.ini
+
 # Activate a2enmod
 RUN a2enmod rewrite
 RUN a2enmod expires
