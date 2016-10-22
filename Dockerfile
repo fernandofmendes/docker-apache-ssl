@@ -1,6 +1,12 @@
 FROM        debian
 MAINTAINER  Fernando Mendes "fernando.mendes@webca.com.br"
 
+ADD ./ioncube_loader_lin_5.6.so /etc/php5/ioncube/ioncube_loader_lin_5.6.so
+ADD ./001-web.conf /etc/apache2/sites-available/
+ADD ./002-ssl.conf /etc/apache2/sites-available/
+ADD start.sh /start.sh
+RUN chmod 0755 /start.sh
+
 # Update the package repository
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
@@ -37,7 +43,6 @@ RUN sed -i 's/\;error_log\ \=\ php_errors\.log/error_log\ \=\ \/var\/www\/html\/
 RUN sed -i 's/short_open_tag\ \=\ Off/short_open_tag\ \=\ On/g' /etc/php5/apache2/php.ini
 
 # Enable PHP IONCUBE
-ADD ./ioncube_loader_lin_5.6.so /etc/php5/ioncube/ioncube_loader_lin_5.6.so
 RUN echo 'zend_extension = /etc/php5/ioncube/ioncube_loader_lin_5.6.so' >> /etc/php5/apache2/php.ini
 
 # Activate a2enmod
@@ -45,8 +50,6 @@ RUN a2enmod rewrite
 RUN a2enmod expires
 
 # Add configuration files
-ADD ./001-web.conf /etc/apache2/sites-available/
-ADD ./002-ssl.conf /etc/apache2/sites-available/
 RUN ln -s /etc/apache2/sites-available/001-web.conf /etc/apache2/sites-enabled/
 RUN ln -s /etc/apache2/sites-available/002-ssl.conf /etc/apache2/sites-enabled/
 RUN rm /etc/apache2/sites-enabled/000-default.conf
@@ -89,6 +92,5 @@ ENV APACHE_DOCUMENTROOT /var/www/html
 
 EXPOSE 80
 EXPOSE 443
-ADD start.sh /start.sh
-RUN chmod 0755 /start.sh
+
 CMD ["bash", "start.sh"]
