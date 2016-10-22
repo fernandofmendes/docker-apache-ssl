@@ -89,6 +89,6 @@ ENV APACHE_DOCUMENTROOT /var/www/html
 
 EXPOSE 80
 EXPOSE 443
-ADD start.sh /start.sh
+ADD ./start.sh /start.sh
 RUN chmod 0755 /start.sh
 CMD ["bash", "start.sh"]
